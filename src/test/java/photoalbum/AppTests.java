@@ -39,4 +39,19 @@ public class AppTests {
 
         verify(apiClient, times(1)).getAlbum(eq(2));
     }
+    @Test
+    public void inputMultiplePhotoAlbumCommandsTest() {
+        PhotosApiClient apiClient = mock(PhotosApiClient.class);
+
+        String input = "photo-album 1\nphoto-album 2\nphoto-album 3\nquit";
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+
+        App app = new App(apiClient);
+        app.run();
+
+        verify(apiClient, times(1)).getAlbum(eq(1));
+        verify(apiClient, times(1)).getAlbum(eq(2));
+        verify(apiClient, times(1)).getAlbum(eq(3));
+    }
 }
