@@ -1,12 +1,17 @@
 package photoalbum;
 
+import java.net.http.HttpClient;
 import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
 
 public class App {
     private PhotosApiClient apiClient;
 
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        PhotosApiClient apiClient = new PhotosApiClient();
+        App app = new App(apiClient);
+
+        app.run();
     }
 
     public App(PhotosApiClient apiClient) {
