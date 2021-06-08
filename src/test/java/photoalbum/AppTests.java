@@ -50,6 +50,18 @@ public class AppTests {
         verify(apiClient, times(1)).getAlbum(eq(3));
     }
 
+    @Test
+    public void earlyQuitStopsProcessingTest() {
+        PhotosApiClient apiClient = mock(PhotosApiClient.class);
+
+        setSystemInput("quit\nphoto-album 1");
+
+        App app = new App(apiClient);
+        app.run();
+
+        verify(apiClient, never()).getAlbum(anyInt());
+    }
+
     private void setSystemInput(String input) {
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
