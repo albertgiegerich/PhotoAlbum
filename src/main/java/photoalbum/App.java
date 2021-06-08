@@ -1,5 +1,7 @@
 package photoalbum;
 
+import java.util.Scanner;
+
 public class App {
     private PhotosApiClient apiClient;
 
@@ -12,6 +14,12 @@ public class App {
     }
 
     public void run() {
-        apiClient.getAlbum(1);
+        try (Scanner userInput = new Scanner(System.in)) {
+
+            String input = userInput.nextLine();
+            String[] commands = input.split(" ");
+
+            apiClient.getAlbum(Integer.parseInt(commands[1]));
+        }
     }
 }
