@@ -12,7 +12,6 @@ import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 public class AppTests {
@@ -93,7 +92,7 @@ public class AppTests {
         App app = new App(apiClient);
         app.run();
 
-        assertTrue(out.toString().contains(Constants.INVALID_COMMAND_MESSAGE));
+        assertTrue(out.toString().contains("Error"));
     }
 
     @Test
@@ -106,7 +105,7 @@ public class AppTests {
         App app = new App(apiClient);
         app.run();
 
-        assertTrue(out.toString().contains(Constants.INVALID_COMMAND_MESSAGE));
+        assertTrue(out.toString().contains("Error"));
     }
 
     @Test
@@ -119,7 +118,7 @@ public class AppTests {
         App app = new App(apiClient);
         app.run();
 
-        assertFalse(out.toString().contains(Constants.INVALID_COMMAND_MESSAGE));
+        assertFalse(out.toString().contains("Error"));
     }
 
     @Test
@@ -197,6 +196,38 @@ public class AppTests {
         // There should be 2 help messages when the help command is run.
         assertEquals(3, out.toString().split("Welcome to the album management CLI").length);
 
+    }
+
+    @Test
+    public void inputPhotoTest() {
+        PhotosApiClient apiClient = mock(PhotosApiClient.class);
+
+        Photo photo = new Photo();
+
+        setSystemInput("photo 1\nquit");
+
+
+        try {
+            given(apiClient.getPhoto(anyInt())).willReturn(photo);
+            App app = new App(apiClient);
+            app.run();
+            verify(apiClient, times(1)).getPhoto(eq(1));
+        } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
+            fail("Caught exception: "+e.getClass().getName());
+        }
+    }
+
+    @Test
+    public void passingAlphaToPhotoCommandProducesErrorTest() {
+        PhotosApiClient apiClient = mock(PhotosApiClient.class);
+        setSystemInput("photo abc\nquit");
+
+        OutputStream out = getSystemOutput();
+
+        App app = new App(apiClient);
+        app.run();
+
+        assertTrue(out.toString().contains("The photo ID must be an integer."));
     }
 
     private OutputStream getSystemOutput() {
