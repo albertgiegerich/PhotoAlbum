@@ -33,7 +33,7 @@ public class PhotosApiClient {
     private List<Photo> retrievePhotos(String queryString) throws ExecutionException, InterruptedException, JsonProcessingException {
         String json = makeHttpRequest(apiUrl + queryString);
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(json, new TypeReference<List<Photo>>() {});
+        return mapper.readValue(json, new TypeReference<>() {});
     }
 
     public String makeHttpRequest(String url) throws ExecutionException, InterruptedException {
