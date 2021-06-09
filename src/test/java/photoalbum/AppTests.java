@@ -181,8 +181,21 @@ public class AppTests {
         } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
             fail("Caught exception: "+e.getClass().getName());
         }
+    }
 
+    @Test
+    public void helpMessageDisplaysForHelpCommandTest() {
+        PhotosApiClient apiClient = mock(PhotosApiClient.class);
 
+        OutputStream out = getSystemOutput();
+
+        setSystemInput("help\nquit");
+
+        App app = new App(apiClient);
+        app.run();
+
+        // There should be 2 help messages when the help command is run.
+        assertEquals(3, out.toString().split("Welcome to the album management CLI").length);
 
     }
 

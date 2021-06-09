@@ -24,10 +24,7 @@ public class App {
     }
 
     public void run() {
-        System.out.println("Welcome to the album management CLI. Please enter one of the following commands:\n" +
-                "photo-album [id] - display the photos in the album with albumId [id]\n" +
-                "help - display this message again\n" +
-                "quit - exit the application\n");
+        System.out.println(Constants.HELP_MESSAGE);
         try (Scanner userInput = new Scanner(System.in)) {
             boolean commandToQuitHasBeenIssued = false;
             while (!commandToQuitHasBeenIssued) {
@@ -62,6 +59,9 @@ public class App {
         switch (command) {
             case Constants.PHOTO_ALBUM_COMMAND:
                 handlePhotoAlbumCommand(commandAndValue[1]);
+                break;
+            case Constants.HELP_COMMAND:
+                System.out.println(Constants.HELP_MESSAGE);
                 break;
             default:
                 System.out.println(Constants.INVALID_COMMAND_MESSAGE);
