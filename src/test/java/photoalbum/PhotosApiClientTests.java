@@ -15,21 +15,21 @@ import static org.mockito.Mockito.mock;
 
 public class PhotosApiClientTests {
 
-    @Test
-    public void photoJsonIsConvertedToPhotoTest() {
-        String apiUrl = "https://jsonplaceholder.typicode.com/photos";
-        PhotosApiClient photosApiClient = mock(PhotosApiClient.class);
-        String json = "[{" +
-                "\"albumId\": 1," +
-                "\"id\": 40," +
-                "\"title\": \"titleTest\"," +
-                "\"url\": \"urlTest\"," +
-                "\"thumbnailUrl\": \"thumbnailUrlTest\"" +
-                "}]";
+    private static final String PHOTO_JSON = "[{" +
+            "\"albumId\": 1," +
+            "\"id\": 40," +
+            "\"title\": \"titleTest\"," +
+            "\"url\": \"urlTest\"," +
+            "\"thumbnailUrl\": \"thumbnailUrlTest\"" +
+            "}]";
 
+
+    @Test
+    public void getAlbumPhotoJsonIsConvertedToPhotoTest() {
+        PhotosApiClient photosApiClient = mock(PhotosApiClient.class);
 
         try {
-            given(photosApiClient.makeHttpRequest(any(String.class))).willReturn(json);
+            given(photosApiClient.makeHttpRequest(any(String.class))).willReturn(PHOTO_JSON);
             given(photosApiClient.getAlbum(anyInt())).willCallRealMethod();
 
             List<Photo> album = photosApiClient.getAlbum(1);
@@ -37,6 +37,27 @@ public class PhotosApiClientTests {
             assertEquals(1, album.size());
 
             Photo photo = album.get(0);
+
+            assertEquals(1, photo.getAlbumId());
+            assertEquals(40, photo.getId());
+            assertEquals("titleTest", photo.getTitle());
+            assertEquals("urlTest", photo.getUrl());
+            assertEquals("thumbnailUrlTest", photo.getThumbnailUrl());
+
+        } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
+            fail("An exception was thrown: "+e.getClass().getName());
+        }
+    }
+
+    @Test
+    public void getPhotoPhotoJsonIsConvertedToPhotoTest() {
+        PhotosApiClient photosApiClient = mock(PhotosApiClient.class);
+
+        try {
+            given(photosApiClient.makeHttpRequest(any(String.class))).willReturn(PHOTO_JSON);
+            given(photosApiClient.getPhoto(anyInt())).willCallRealMethod();
+
+            Photo photo = photosApiClient.getPhoto(1);
 
             assertEquals(1, photo.getAlbumId());
             assertEquals(40, photo.getId());

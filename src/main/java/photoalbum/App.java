@@ -58,6 +58,9 @@ public class App {
             case Constants.PHOTO_ALBUM_COMMAND:
                 handlePhotoAlbumCommand(commandAndValue[1]);
                 break;
+            case Constants.PHOTO_COMMAND:
+                handlePhotoCommand(commandAndValue[1]);
+                break;
             case Constants.HELP_COMMAND:
                 System.out.println(Constants.HELP_MESSAGE);
                 break;
@@ -68,8 +71,25 @@ public class App {
         return false;
     }
 
-    private void handlePhotoAlbumCommand(String albumId) {
+    private void handlePhotoCommand(String id) {
+        if (!id.matches("\\d+")) {
+            System.out.println("The photo ID must be an integer.");
+            return;
+        }
 
+        try {
+            Photo photo = apiClient.getPhoto(Integer.parseInt(id));
+
+            System.out.println("["+photo.getId()+"] "+photo.getTitle());
+            System.out.println("\tAlbum ID: "+photo.getAlbumId());
+            System.out.println("\tURL: "+photo.getUrl());
+            System.out.println("\tThumbnail: "+photo.getThumbnailUrl());
+        } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
+            System.out.println("An error occurred while attempting to retrieve photo data. Please check your internet connection and try again.");
+        }
+    }
+
+    private void handlePhotoAlbumCommand(String albumId) {
         if (!albumId.matches("\\d+")) {
             System.out.println("The album ID must be an integer.");
             return;
