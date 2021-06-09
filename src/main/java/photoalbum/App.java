@@ -2,9 +2,7 @@ package photoalbum;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import java.net.http.HttpClient;
 import java.util.List;
-import java.util.Locale;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 
@@ -24,7 +22,7 @@ public class App {
     }
 
     public void run() {
-        System.out.println(Constants.HELP_MESSAGE);
+        System.out.println("\n"+Constants.HELP_MESSAGE);
         try (Scanner userInput = new Scanner(System.in)) {
             boolean commandToQuitHasBeenIssued = false;
             while (!commandToQuitHasBeenIssued) {

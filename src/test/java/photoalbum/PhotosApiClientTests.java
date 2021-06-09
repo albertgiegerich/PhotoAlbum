@@ -3,15 +3,14 @@ package photoalbum;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
 
-import java.net.http.HttpClient;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 
 public class PhotosApiClientTests {
@@ -30,7 +29,7 @@ public class PhotosApiClientTests {
 
 
         try {
-            given(photosApiClient.makeHttpRequest(anyString())).willReturn(json);
+            given(photosApiClient.makeHttpRequest(any(String.class))).willReturn(json);
             given(photosApiClient.getAlbum(anyInt())).willCallRealMethod();
 
             List<Photo> album = photosApiClient.getAlbum(1);
