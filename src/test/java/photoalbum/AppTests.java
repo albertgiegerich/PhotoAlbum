@@ -2,11 +2,14 @@ package photoalbum;
 
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.concurrent.ExecutionException;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -21,7 +24,11 @@ public class AppTests {
         App app = new App(apiClient);
         app.run();
 
-        verify(apiClient, times(1)).getAlbum(eq(1));
+        try {
+            verify(apiClient, times(1)).getAlbum(eq(1));
+        } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
+            fail("Caught exception: "+e.getClass().getName());
+        }
     }
 
     @Test
@@ -33,8 +40,11 @@ public class AppTests {
 
         App app = new App(apiClient);
         app.run();
-
-        verify(apiClient, times(1)).getAlbum(eq(2));
+        try {
+            verify(apiClient, times(1)).getAlbum(eq(2));
+        } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
+            fail("Caught exception: "+e.getClass().getName());
+        }
     }
     @Test
     public void inputMultiplePhotoAlbumCommandsTest() {
@@ -45,9 +55,13 @@ public class AppTests {
         App app = new App(apiClient);
         app.run();
 
-        verify(apiClient, times(1)).getAlbum(eq(1));
-        verify(apiClient, times(1)).getAlbum(eq(2));
-        verify(apiClient, times(1)).getAlbum(eq(3));
+        try {
+            verify(apiClient, times(1)).getAlbum(eq(1));
+            verify(apiClient, times(1)).getAlbum(eq(2));
+            verify(apiClient, times(1)).getAlbum(eq(3));
+        } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
+            fail("Caught exception: "+e.getClass().getName());
+        }
     }
 
     @Test
@@ -59,7 +73,11 @@ public class AppTests {
         App app = new App(apiClient);
         app.run();
 
-        verify(apiClient, never()).getAlbum(anyInt());
+        try {
+            verify(apiClient, never()).getAlbum(anyInt());
+        } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
+            fail("Caught exception: "+e.getClass().getName());
+        }
     }
 
     private void setSystemInput(String input) {

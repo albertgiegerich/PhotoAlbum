@@ -1,5 +1,7 @@
 package photoalbum;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import java.net.http.HttpClient;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
@@ -8,7 +10,8 @@ public class App {
     private PhotosApiClient apiClient;
 
     public static void main(String[] args) {
-        PhotosApiClient apiClient = new PhotosApiClient();
+        String apiUrl = "https://jsonplaceholder.typicode.com/photos";
+        PhotosApiClient apiClient = new PhotosApiClient(apiUrl);
         App app = new App(apiClient);
 
         app.run();
@@ -35,7 +38,11 @@ public class App {
         }
 
         String[] commands = input.split(" ");
-        apiClient.getAlbum(Integer.parseInt(commands[1]));
+        try {
+            apiClient.getAlbum(Integer.parseInt(commands[1]));
+        } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
+            System.out.println("An error occurred while attempting to retrieve photo data. Please check your internet connection and try again.");
+        }
 
         return false;
     }
