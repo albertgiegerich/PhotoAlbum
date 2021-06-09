@@ -230,6 +230,35 @@ public class AppTests {
         assertTrue(out.toString().contains("The photo ID must be an integer."));
     }
 
+    @Test
+    public void listAlbumsPrintsAlbumsTest() {
+        PhotosApiClient apiClient = mock(PhotosApiClient.class);
+
+        List<Album> albums = new ArrayList<>();
+        Album album = new Album();
+        album.setId(1);
+        album.setUserId(2);
+        album.setTitle("test title");
+        albums.add(album);
+
+        OutputStream out = getSystemOutput();
+
+        setSystemInput("list-albums\nquit");
+
+
+
+        try {
+            given(apiClient.listAlbums()).willReturn(albums);
+
+            App app = new App(apiClient);
+            app.run();
+
+            assertTrue(out.toString().contains("[1] test title"));
+        } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
+            fail("Caught exception: " + e.getClass().getName());
+        }
+    }
+
     private OutputStream getSystemOutput() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         System.setOut(new PrintStream(out));
