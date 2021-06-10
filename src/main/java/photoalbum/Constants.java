@@ -22,4 +22,5 @@ public class Constants {
             "quit                      Exit the application\n";
 
     public static final String API_URL = "https://jsonplaceholder.typicode.com/";
+    public static final int MAX_ID_LENGTH = 18;
 }

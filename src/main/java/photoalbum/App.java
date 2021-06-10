@@ -125,8 +125,8 @@ public class App {
             System.out.println("The "+idName+" ID must be an integer.");
             return false;
         }
-        if (id.length() > 18) {
-            System.out.println("IDs longer than 18 digits are not supported. Please try again.");
+        if (id.length() > Constants.MAX_ID_LENGTH) {
+            System.out.println("IDs longer than "+Constants.MAX_ID_LENGTH+" digits are not supported. Please try again.");
             return false;
         }
         return true;
