@@ -26,7 +26,7 @@ public class AppTests {
         app.run();
 
         try {
-            verify(apiClient, times(1)).getAlbum(eq(1));
+            verify(apiClient, times(1)).getAlbum(eq(1L));
         } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
             fail("Caught exception: "+e.getClass().getName());
         }
@@ -42,7 +42,7 @@ public class AppTests {
         App app = new App(apiClient);
         app.run();
         try {
-            verify(apiClient, times(1)).getAlbum(eq(2));
+            verify(apiClient, times(1)).getAlbum(eq(2L));
         } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
             fail("Caught exception: "+e.getClass().getName());
         }
@@ -57,9 +57,9 @@ public class AppTests {
         app.run();
 
         try {
-            verify(apiClient, times(1)).getAlbum(eq(1));
-            verify(apiClient, times(1)).getAlbum(eq(2));
-            verify(apiClient, times(1)).getAlbum(eq(3));
+            verify(apiClient, times(1)).getAlbum(eq(1L));
+            verify(apiClient, times(1)).getAlbum(eq(2L));
+            verify(apiClient, times(1)).getAlbum(eq(3L));
         } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
             fail("Caught exception: "+e.getClass().getName());
         }
@@ -151,7 +151,7 @@ public class AppTests {
 
 
         try {
-            given(apiClient.getAlbum(anyInt())).willReturn(album);
+            given(apiClient.getAlbum(anyLong())).willReturn(album);
 
             App app = new App(apiClient);
             app.run();
@@ -171,7 +171,7 @@ public class AppTests {
         setSystemInput("photo-album 1\nquit");
 
         try {
-            given(apiClient.getAlbum(anyInt())).willThrow(ExecutionException.class);
+            given(apiClient.getAlbum(anyLong())).willThrow(ExecutionException.class);
             App app = new App(apiClient);
             app.run();
 
@@ -211,7 +211,7 @@ public class AppTests {
             given(apiClient.getPhoto(anyInt())).willReturn(photo);
             App app = new App(apiClient);
             app.run();
-            verify(apiClient, times(1)).getPhoto(eq(1));
+            verify(apiClient, times(1)).getPhoto(eq(1L));
         } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
             fail("Caught exception: "+e.getClass().getName());
         }
@@ -228,6 +228,35 @@ public class AppTests {
         app.run();
 
         assertTrue(out.toString().contains("The photo ID must be an integer."));
+    }
+
+    @Test
+    public void listAlbumsPrintsAlbumsTest() {
+        PhotosApiClient apiClient = mock(PhotosApiClient.class);
+
+        List<Album> albums = new ArrayList<>();
+        Album album = new Album();
+        album.setId(1);
+        album.setUserId(2);
+        album.setTitle("test title");
+        albums.add(album);
+
+        OutputStream out = getSystemOutput();
+
+        setSystemInput("list-albums\nquit");
+
+
+
+        try {
+            given(apiClient.listAlbums()).willReturn(albums);
+
+            App app = new App(apiClient);
+            app.run();
+
+            assertTrue(out.toString().contains("[1] test title"));
+        } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
+            fail("Caught exception: " + e.getClass().getName());
+        }
     }
 
     private OutputStream getSystemOutput() {

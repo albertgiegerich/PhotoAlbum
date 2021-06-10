@@ -21,19 +21,23 @@ public class PhotosApiClient {
         this.apiUrl = apiUrl;
     }
 
-    public List<Photo> getAlbum(Integer albumId) throws ExecutionException, InterruptedException, JsonProcessingException {
-        return retrievePhotos("?albumId=" + albumId);
+    public List<Album> listAlbums() throws ExecutionException, InterruptedException, JsonProcessingException {
+        return makeApiCall("albums", new TypeReference<>() {});
     }
 
-    public Photo getPhoto(int id)  throws ExecutionException, InterruptedException, JsonProcessingException {
-        List<Photo> photos = retrievePhotos("?id=" + id);
+    public List<Photo> getAlbum(long albumId) throws ExecutionException, InterruptedException, JsonProcessingException {
+        return makeApiCall("photos?albumId=" + albumId, new TypeReference<>() {});
+    }
+
+    public Photo getPhoto(long id)  throws ExecutionException, InterruptedException, JsonProcessingException {
+        List<Photo> photos = makeApiCall("photos?id=" + id, new TypeReference<>() {});
         return photos.size() > 0 ? photos.get(0) : null;
     }
 
-    private List<Photo> retrievePhotos(String queryString) throws ExecutionException, InterruptedException, JsonProcessingException {
+    private <T> List<T> makeApiCall(String queryString, TypeReference<List<T>> type) throws ExecutionException, InterruptedException, JsonProcessingException {
         String json = makeHttpRequest(apiUrl + queryString);
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(json, new TypeReference<>() {});
+        return mapper.readValue(json, type);
     }
 
     public String makeHttpRequest(String url) throws ExecutionException, InterruptedException {

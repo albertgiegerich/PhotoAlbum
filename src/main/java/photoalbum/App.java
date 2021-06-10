@@ -25,10 +25,14 @@ public class App {
         try (Scanner userInput = new Scanner(System.in)) {
             boolean commandToQuitHasBeenIssued = false;
             while (!commandToQuitHasBeenIssued) {
-                System.out.print("> ");
-                String input = userInput.nextLine();
+                try {
+                    System.out.print("> ");
+                    String input = userInput.nextLine();
 
-                commandToQuitHasBeenIssued = processUserInput(input.toLowerCase());
+                    commandToQuitHasBeenIssued = processUserInput(input.toLowerCase());
+                } catch (RuntimeException e) {
+                    System.out.println("An unexpected error has occurred. Please try again.");
+                }
             }
         }
     }
@@ -52,6 +56,9 @@ public class App {
 
         try {
             switch (command) {
+                case LIST_ALBUMS:
+                    handleListAlbumsCommand();
+                    break;
                 case PHOTO_ALBUM:
                     handlePhotoAlbumCommand(commandAndValue[1]);
                     break;
@@ -74,28 +81,55 @@ public class App {
         return continueExecution;
     }
 
+    private void handleListAlbumsCommand()  throws ExecutionException, InterruptedException, JsonProcessingException {
+        List<Album> albums = apiClient.listAlbums();
+
+        for (Album album : albums) {
+            System.out.println("["+album.getId()+"] " + album.getTitle());
+        }
+    }
+
     private void handlePhotoCommand(String id) throws ExecutionException, InterruptedException, JsonProcessingException {
-        if (!isInteger(id)) {
-            System.out.println("The photo ID must be an integer.");
+
+        if (!validateId(id, "photo")) {
             return;
         }
-        Photo photo = apiClient.getPhoto(Integer.parseInt(id));
 
-        System.out.println("["+photo.getId()+"] "+photo.getTitle());
-        System.out.println("\tAlbum ID: "+photo.getAlbumId());
-        System.out.println("\tURL: "+photo.getUrl());
-        System.out.println("\tThumbnail: "+photo.getThumbnailUrl());
+        Photo photo = apiClient.getPhoto(Long.parseLong(id));
+
+        if (photo == null) {
+            System.out.println("No photo exists with ID "+id+". Please try again.");
+        } else {
+            System.out.println("[" + photo.getId() + "] " + photo.getTitle());
+            System.out.println("\tAlbum ID: " + photo.getAlbumId());
+            System.out.println("\tURL: " + photo.getUrl());
+            System.out.println("\tThumbnail: " + photo.getThumbnailUrl());
+        }
     }
 
     private void handlePhotoAlbumCommand(String albumId) throws ExecutionException, InterruptedException, JsonProcessingException {
-        if (!isInteger(albumId)) {
-            System.out.println("The album ID must be an integer.");
+        if (!validateId(albumId, "album")) {
             return;
         }
-        List<Photo> album = apiClient.getAlbum(Integer.parseInt(albumId));
+        List<Photo> album = apiClient.getAlbum(Long.parseLong(albumId));
+        if (album.size() == 0) {
+            System.out.println("The album with ID "+albumId+ " does not exist or contains no photos. Please try again.");
+        }
         for (Photo photo : album) {
             System.out.println("["+photo.getId()+"] "+photo.getTitle());
         }
+    }
+
+    private boolean validateId(String id, String idName) {
+        if (!isInteger(id)) {
+            System.out.println("The "+idName+" ID must be an integer.");
+            return false;
+        }
+        if (id.length() > 18) {
+            System.out.println("IDs longer than 18 digits are not supported. Please try again.");
+            return false;
+        }
+        return true;
     }
 
     private boolean isInteger(String text) {

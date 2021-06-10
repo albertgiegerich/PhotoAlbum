@@ -5,9 +5,10 @@ import java.util.EnumSet;
 public enum Command {
     PHOTO_ALBUM("photo-album", 2),
     PHOTO("photo", 2),
+    LIST_ALBUMS("list-albums", 1),
     HELP("help", 1),
     QUIT("quit", 1),
-    INVALID("invalid", 1);
+    INVALID("invalid", 1),;
 
     public final String command;
     public final int length;
