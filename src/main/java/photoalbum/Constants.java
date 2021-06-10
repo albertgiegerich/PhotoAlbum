@@ -17,7 +17,7 @@ public class Constants {
             "photo [photo ID]          Display the details of the photo with the given ID        [photo ID]: [photo title]\n" +
             "                                                                                        Album ID: [album ID]\n" +
             "                                                                                        URL: [photo URL]\n" +
-            "                                                                                        Thumbnail: [photo thumblinail URL]\n" +
+            "                                                                                        Thumbnail: [photo thumbnail URL]\n" +
             "help                      Display this message again\n" +
             "quit                      Exit the application\n";
 
